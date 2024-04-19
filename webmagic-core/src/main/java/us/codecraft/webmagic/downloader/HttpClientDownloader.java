@@ -84,8 +84,13 @@ public class HttpClientDownloader extends AbstractDownloader {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse, task);
 
-            onSuccess(page, task);
-            logger.info("downloading page success {}", request.getUrl());
+            if (page.isDownloadSuccess()) {
+                onSuccess(page, task);
+                logger.info("downloading page success {}", request.getUrl());
+            } else {
+                onError(page, task, null);
+                logger.info("download page {} error", request.getUrl());
+            }
 
             return page;
         } catch (IOException e) {
@@ -115,6 +120,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
         page.setBytes(bytes);
+        page.setDownloadSuccess(false);
         if (!request.isBinaryContent()) {
             if (charset == null) {
                 charset = getHtmlCharset(contentType, bytes, task);
@@ -125,7 +131,9 @@ public class HttpClientDownloader extends AbstractDownloader {
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
-        page.setDownloadSuccess(true);
+        if (task.getSite().getAcceptStatCode().contains(page.getStatusCode())) {
+            page.setDownloadSuccess(true);
+        }
         if (responseHeader) {
             page.setHeaders(HttpClientUtils.convertHeaders(httpResponse.getAllHeaders()));
         }
