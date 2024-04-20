@@ -9,7 +9,7 @@ package us.codecraft.webmagic.selector;
  */
 class RegexResult {
 
-    private String[] groups;
+    private String group;
 
     public static final RegexResult EMPTY_RESULT = new RegexResult();
 
@@ -17,15 +17,12 @@ class RegexResult {
 
     }
 
-    public RegexResult(String[] groups) {
-        this.groups = groups;
+    public RegexResult(String group) {
+        this.group = group;
     }
 
-    public String get(int groupId) {
-        if (groups == null) {
-            return null;
-        }
-        return groups[groupId];
+    public String getGroup() {
+        return this.group;
     }
 
 }

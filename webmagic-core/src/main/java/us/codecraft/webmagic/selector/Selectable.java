@@ -67,15 +67,6 @@ public interface Selectable {
     public Selectable regex(String regex);
 
     /**
-     * select list with regex
-     *
-     * @param regex regex
-     * @param group group
-     * @return new Selectable after extract
-     */
-    public Selectable regex(String regex, int group);
-
-    /**
      * replace with regex
      *
      * @param regex regex

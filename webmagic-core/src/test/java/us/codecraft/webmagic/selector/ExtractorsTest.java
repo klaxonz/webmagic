@@ -21,7 +21,6 @@ public class ExtractorsTest {
         assertThat($("div h1 a", "innerHtml").select(html)).isEqualTo("aabbcc");
         assertThat(xpath("//a/@href").select(html)).isEqualTo("xxx");
         assertThat(regex("a href=\"(.*)\"").select(html)).isEqualTo("xxx");
-        assertThat(regex("(a href)=\"(.*)\"", 2).select(html)).isEqualTo("xxx");
     }
 
     @Test

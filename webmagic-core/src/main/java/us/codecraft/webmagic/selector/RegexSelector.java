@@ -20,11 +20,8 @@ public class RegexSelector implements Selector {
 
     private Pattern regex;
 
-    private int group = 1;
-
-    public RegexSelector(String regexStr, int group) {
+    public RegexSelector(String regexStr) {
         this.compileRegex(regexStr);
-        this.group = group;
     }
 
     private void compileRegex(String regexStr) {
@@ -39,22 +36,9 @@ public class RegexSelector implements Selector {
         }
     }
 
-    /**
-     * Create a RegexSelector. When there is no capture group, the value is set to 0 else set to 1.
-     * @param regexStr the regular expression.
-     */
-    public RegexSelector(String regexStr) {
-        this.compileRegex(regexStr);
-        if (regex.matcher("").groupCount() == 0) {
-            this.group = 0;
-        } else {
-            this.group = 1;
-        }
-    }
-
     @Override
     public String select(String text) {
-        return selectGroup(text).get(group);
+        return selectGroup(text).getGroup();
     }
 
     @Override
@@ -62,7 +46,7 @@ public class RegexSelector implements Selector {
         List<String> strings = new ArrayList<String>();
         List<RegexResult> results = selectGroupList(text);
         for (RegexResult result : results) {
-            strings.add(result.get(group));
+            strings.add(result.getGroup());
         }
         return strings;
     }
@@ -70,11 +54,7 @@ public class RegexSelector implements Selector {
     public RegexResult selectGroup(String text) {
         Matcher matcher = regex.matcher(text);
         if (matcher.find()) {
-            String[] groups = new String[matcher.groupCount() + 1];
-            for (int i = 0; i < groups.length; i++) {
-                groups[i] = matcher.group(i);
-            }
-            return new RegexResult(groups);
+            return new RegexResult(matcher.group());
         }
         return RegexResult.EMPTY_RESULT;
     }
@@ -83,11 +63,7 @@ public class RegexSelector implements Selector {
         Matcher matcher = regex.matcher(text);
         List<RegexResult> resultList = new ArrayList<RegexResult>();
         while (matcher.find()) {
-            String[] groups = new String[matcher.groupCount() + 1];
-            for (int i = 0; i < groups.length; i++) {
-                groups[i] = matcher.group(i);
-            }
-            resultList.add(new RegexResult(groups));
+            resultList.add(new RegexResult(matcher.group()));
         }
         return resultList;
     }

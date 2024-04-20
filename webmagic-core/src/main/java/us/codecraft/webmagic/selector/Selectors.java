@@ -12,10 +12,6 @@ public abstract class Selectors {
         return new RegexSelector(expr);
     }
 
-    public static RegexSelector regex(String expr, int group) {
-        return new RegexSelector(expr,group);
-    }
-
     public static SmartContentSelector smartContent() {
         return new SmartContentSelector();
     }
